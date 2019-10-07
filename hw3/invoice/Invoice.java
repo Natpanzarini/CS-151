@@ -6,6 +6,7 @@ import javax.swing.event.*;
 */
 public class Invoice
 {
+  Hashtable<LineItem, Integer> numItems;
    /**
       Constructs a blank invoice.
    */
@@ -13,6 +14,7 @@ public class Invoice
    {
       items = new ArrayList<>();
       listeners = new ArrayList<>();
+      numItems = new Hashtable<>();
    }
 
   /**
@@ -22,20 +24,16 @@ public class Invoice
    public void addItem(LineItem item)
    {
       items.add(item);
+      if(numItems.containsKey(item)){
+        numItems.put(item,numItems.get(item) + 1);
+      }
+      else{
+        numItems.put(item,1);
+      }
       // Notify all observers of the change to the invoice
       ChangeEvent event = new ChangeEvent(this);
       for (ChangeListener listener : listeners)
          listener.stateChanged(event);
-   }
-
-   public void removeItem(LineItem item){
-     if(items.contains(item)){
-       items.remove(item);
-     }
-     // Notify all observers of the change to the invoice
-     ChangeEvent event = new ChangeEvent(this);
-     for (ChangeListener listener : listeners)
-        listener.stateChanged(event);
    }
 
    /**
@@ -79,8 +77,19 @@ public class Invoice
    {
       String r = formatter.formatHeader();
       Iterator<LineItem> iter = getItems();
-      while (iter.hasNext())
-         r += formatter.formatLineItem(iter.next());
+      ArrayList<String> printed = new ArrayList<>();
+
+      while(iter.hasNext()){
+        LineItem current = iter.next();
+        if(!printed.contains(current.toString())){
+          printed.add(current.toString());
+          r += formatter.formatLineItem(current,numItems.get(current));
+        }
+        else{
+          formatter.formatLineItem(current,numItems.get(current));
+        }
+      }
+
       return r + formatter.formatFooter();
    }
 

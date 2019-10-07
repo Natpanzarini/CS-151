@@ -14,7 +14,7 @@ public interface InvoiceFormatter
       Formats a line item of the invoice.
       @return the formatted line item
    */
-   String formatLineItem(LineItem item);
+   String formatLineItem(LineItem item, int count);
 
    /**
       Formats the footer of the invoice.
