@@ -26,6 +26,7 @@ public class question2
             }
          });
 
+         int counter = 0;
       JButton carButton = new JButton("Car");
       carButton.addActionListener(new
          ActionListener()
